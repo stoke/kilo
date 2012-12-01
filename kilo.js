@@ -26,12 +26,9 @@ kilo.series = function(fns, cbl) {
 
     if (arguments.length > 1)
       results = results.concat(Array.prototype.slice.call(arguments, 1));
-
-    if (e)
-      return cbl(e);
-
-    if (!fn)
-      return cbl(null, results);
+    
+    if (!fn || e)
+      return cbl(e || null, results);
 
     return fn(iterator);
   })();
@@ -106,7 +103,7 @@ function each(t, list, iterator, cbl, errCbl) {
 
 function map(t, list, iterator, cbl, errCbl) {
   var nlist = list.slice();
-  
+
   var iterators = list.map(function(i, idx) {
     return function(fn) {
       iterator(i, function(e, what) {
