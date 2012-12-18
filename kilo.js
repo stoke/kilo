@@ -1,6 +1,9 @@
 var kilo = (typeof exports !== 'undefined' ? exports : window.kilo = {});
 
-kilo.waterfall = function(fns, cbl) {
+kilo.waterfall = function(fns, cbl) { 
+  if (!fns || !fns.length)
+    return cbl(null);
+
   (function iterator() {
     var args = [].slice.call(arguments),
         e = args.shift(),
@@ -20,6 +23,9 @@ kilo.waterfall = function(fns, cbl) {
 kilo.series = function(fns, cbl) {
   var results = [];
 
+  if (!fns || !fns.length)
+    return cbl(null);
+  
   (function iterator() {
     var e = arguments[0],
         fn = fns.shift();
@@ -40,6 +46,9 @@ kilo.parallel = function(fns, cbl, errCbl) {
 
   errCbl = errCbl || function() {};
   
+  if (!fns || !fns.length)
+    return cbl(null);
+
   var iterator = function() {
     var idx = arguments[arguments.length - 1],
         e = arguments[0];
@@ -66,7 +75,10 @@ kilo.simplerParallel = function(fns, cbl, errCbl, t) { // simpler parallel, with
   var executed = 0;
 
   errCbl = errCbl || function() {};
-  
+
+  if (!fns || !fns.length)
+    return cbl(null);
+
   var iterator = function() {
     var e = arguments[0];
     
@@ -121,7 +133,7 @@ function map(t, list, iterator, cbl, errCbl) {
 
   kilo[t](iterators, function() {
     cbl(null, nlist);
-  }, errCbl, 'a');
+  }, errCbl);
 };
 
 kilo.each = kilo.eachParallel = each.bind(kilo, 'simplerParallel');
